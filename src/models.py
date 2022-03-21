@@ -8,61 +8,52 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Usuario1(Base):
-    __tablename__ = 'Usuario1'
+class Usuario(Base):
+    __tablename__ = 'Usuario'
     nickname = Column(Integer, primary_key=True)
     name = Column(String(50), nullable=False)
     mail= Column(String(50))
     password= Column(String(20))
     dob = Column(Integer)
-    relacionPost1 = relationship("Post1")
-    relacionComment1 = relationship("Comment1")
+    relacionPost1 = relationship("Post")
+    relacionComment = relationship("Comment")
+    relacionFollowers = relationship("Followers")
 
-class Post1(Base):
-    __tablename__ = 'Post1'
+class Post(Base):
+    __tablename__ = 'Post'
     Id = Column(Integer, primary_key=True)
-    name = Column(String(50), ForeignKey('Usuario1.nickname'), nullable=False)
+    name = Column(String(50), ForeignKey('Usuario.nickname'), nullable=False)
     Conten= Column(String(400))
     date= Column(Integer)
     ubication = Column(String(20))
-    Comment = Column(String(300), ForeignKey("Comment2.name"))
+    relacionMedia = relationship("Media")
+    relacionCommentA = relationship("Comment")
 
-class Comment1(Base):
-    __tablename__ = 'Comment1'
+class Comment(Base):
+    __tablename__ = 'Comment'
     Id = Column(Integer, primary_key=True)
-    name = Column(String(50), ForeignKey('Usuario1.nickname'), nullable=False)
+    author_id= Column(String(50), ForeignKey('Usuario.nickname'), nullable=False)
     Conten= Column(String(50))
-    date= Column(Integer)
-    etiqueta = Column(String(10))
-    relacionPostUser2 = relationship("Post2")
-
-class Usuario2(Base):
-    __tablename__ = 'Usuario2'
-    nickname = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
-    mail= Column(String(50))
-    password= Column(String(20))
-    relacionPost2 = relationship("Post2")
-    relacionComment2 = relationship("Comment2")
-
-class Post2(Base):
-    __tablename__ = 'Post2'
-    Id = Column(Integer, primary_key=True)
-    name = Column(String(50), ForeignKey('Usuario2.nickname'), nullable=False)
-    Conten= Column(String(400))
-    date= Column(Integer)
-    ubication = Column(String(20))  
-    Comment = Column(String(300), ForeignKey("Comment1.name"))
+    post_id= Column(String(50), ForeignKey('Post.Id'), nullable=False)
     
 
-class Comment2(Base):
-    __tablename__ = 'Comment2'
+class Followers(Base):
+    __tablename__ = 'Followers'
+    User_from_id = Column(Integer, primary_key=True)
+    User_to_id = Column(Integer, ForeignKey('Usuario.nickname'), nullable=False)
+    
+    
+
+class Media(Base):
+    __tablename__ = 'Media'
     Id = Column(Integer, primary_key=True)
-    name = Column(String(50), ForeignKey('Usuario2.nickname'), nullable=False)
-    Conten= Column(String(50))
-    date= Column(String(20))
-    etiqueta = Column(String(10))
-    relacionPostUser1 = relationship("Post1")
+    name = Column(String(50))
+    url= Column(String(400))
+    post_id= Column(Integer , ForeignKey('Post.Id'), nullable=False)
+    tipo= Column(String(20))  
+    
+
+
 
     def to_dict(self):
         return {}
